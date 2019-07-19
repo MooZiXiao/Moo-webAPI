@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>本地存储（微博发布效果）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .weibo {
+            width: 600px;
+            border: 1px solid #ccc;
+
+            margin: 100px auto;
+            padding: 10px;
+
+        }
+
+        .weibo-text {
+            width: 590px;
+            height: 140px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            resize: none;
+        }
+
+        .weibo-text:focus {
+            border-color: #f60;
+        }
+
+        .weibo-btn {
+            width: 80px;
+            height: 30px;
+            background-color: #f90;
+            color: #fff;
+            border: 0 none;
+            margin-top: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            outline: 0 none;
+        }
+
+        .weibo-list {
+            padding-top: 10px;
+        }
+
+        .weibo-list li {
+            font-size: 14px;
+            line-height: 30px;
+            border-bottom: 1px dotted #ccc;
+            overflow: hidden;
+        }
+
+        .weibo-list li p {
+            float: left;
+            color: #666;
+        }
+
+        .weibo-list li span {
+            float: right;
+        }
+        .weibo-list li .del {
+            color: rgba(233,12,138,.8);
+            cursor: pointer;
+        }
+
+
+        .weibo-list li input {
+            height: 24px;
+            line-height: 24px;
+            width: 300px;
+            font-size: 14px;
+            border: 0 none;
+        }
+        .time {
+            margin-right: 10px;
+            font-style: normal;
+            float: right;
+        }
+    </style>    
+</head>
+
+<body>
+<div class="weibo">
+    <textarea class="weibo-text"></textarea>
+    <input class="weibo-btn" value="发布" type="button">
+    <ul class="weibo-list">
+        <!-- <li>
+            <p class="content">快来收了这九款用上就停不下来的应用吧！！</p>
+            <span class="del">删除</span>
+            <span class="time"></span>
+        </li> -->
+    </ul>
+</div>
+</body>
+<script src='../my_kits.js'></script>
+<script>
+    //获取元素
+    let text=document.querySelector('.weibo-text');
+    let btn=document.querySelector('.weibo-btn');
+    let ul=document.querySelector('.weibo-list');
+
+    //获取data
+    let data = JSON.parse(localStorage.getItem('wbData')) == null ? [] : JSON.parse(localStorage.getItem('wbData'));
+
+    // 创建数组来存储
+    let wbArr=[];
+    // console.log(data)
+    //循环遍历加载li结构
+    data.forEach(e => {
+        let str='<li><p class="content">'+ e.content +'</p><span class="del" data-id="'+ e.id +'">删除</span><span class="time">'+ e.time +'</span></li>';
+        //把str插入weArr后边
+        wbArr.push(str);
+    });
+    // console.log(wbArr)
+    //把结构设置给ul
+    ul.innerHTML= wbArr.join('');
+
+
+    //注册btn事件
+    btn.onclick = function(){
+        //获取text的值
+        let txtV=text.value;
+        //用时间来设置id
+        let id=Date.now();
+        //设置时间
+        let time=kits.formateDay();
+        //新增li
+        let li=document.createElement('li');
+        //给li追加结构
+        li.innerHTML='<p class="content">'+ txtV +'</p><span class="del" data-id="'+ id +'">删除</span><span class="time">'+ time +'</span>';
+        //ul追加li
+        ul.insertBefore(li,ul.children[0]);
+        //清空文本域
+        text.value='';
+
+        //存储数据入要先建立本地存储
+        //存储数据
+        data.unshift(
+            {
+            id:id,
+            content:txtV,
+            time:time
+        })
+        //将数据转化为JSON格式字符串
+        let str=JSON.stringify(data);
+        //
+        localStorage.setItem('wbData',str);
+    }
+
+    //给动态生成的标签注册事件，则需要用到点击事件
+    ul.addEventListener('click',function(e){
+        if(e.target.className === 'del'){
+            //获取span的data-id
+            let id=e.target.dataset.id;
+            //span的父元素，获取点击的li
+            let li= e.target.parentNode;
+            // console.log(li)
+            //移除对应的li
+            ul.removeChild(li);
+
+            // let lis=ul.querySelectorAll('li');
+            // for(let i=0; i<lis.length; i++){
+            //     e.target.id=i;
+            //     wbArr.splice(e.target.id,1);
+            // }
+            // let str=JSON.stringify(data);
+            // console.log(str)不可行所以要加入id
+
+            //遍历数据（data）
+            data.forEach(function(v,i){
+                //当data中数据的id和data-id一致时
+                if(v.id==id){
+                    data.splice(i,1);
+                    //当data错写成webArr时，则会把数据一键全部删掉
+                }
+            })
+            //转化为JSON字符串
+            let str=JSON.stringify(data);
+            //保存数据
+            localStorage.setItem('wbData',str);
+            console.log(str)
+        }
+    })
+
+    //键盘事件，按下ctrl+回车发表
+    text.addEventListener('keydown',function(e){
+        if(e.ctrlKey && e.keyCode===13){
+            btn.onclick();
+        }
+    })
+</script>
+</html>

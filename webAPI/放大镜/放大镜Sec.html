@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>放大镜</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: relative;
+      top: 100px;
+      left: 100px;
+    }
+
+    .small {
+      width: 450px;
+      height: 450px;
+      position: absolute;
+    }
+
+    .mask {
+      position: absolute;
+      background-color: rgba(255, 255, 0, .3);
+      width: 225px;
+      height: 225px;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    .big {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: absolute;
+      left: 500px;
+      top: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .big>img {
+      width: 900px;
+      height: 900px;
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="small">
+      <img src="./image/s.jpg" alt="">
+      <div class="mask"></div>
+    </div>
+    <div class="big">
+      <img src="./image/big.jpg" alt="">
+    </div>
+  </div>
+</body>
+<script>
+    //获取元素
+    let box = document.querySelector('.box');
+    let small = document.querySelector('.small');
+    let mask = document.querySelector('.mask');
+    let big = document.querySelector('.big');
+
+    //鼠标移入移出遮罩及big的显示情况
+    box.onmouseover = () => {
+        mask.style.display = 'block';
+        big.style.display = 'block';
+    }
+    box.onmouseout = () => {
+        mask.style.display = 'none';
+        big.style.display = 'none';
+    }
+
+    let boxL = box.offsetLeft;
+    let boxT = box.offsetTop;
+    let boxW = box.offsetWidth;
+    let boxH = box.offsetHeight;
+    // console.log(boxT)
+    //鼠标移动事件
+    small.onmousemove = (e) => {
+        //让mask随鼠标移动
+        // pageX/pageY maskW/2 boxL/boxT
+        let halfOfMaskW = mask.offsetWidth/2;
+        let halfOfMaskH = mask.offsetHeight/2;
+        // console.log(halfOfMask)
+
+
+        let x = e.pageX - boxL - halfOfMaskW;
+        let y = e.pageY - boxT - halfOfMaskH;
+        //通过判断来设置mask移动区域
+        if(x<0) x=0;
+        if(y<0) y=0;
+        //获取boxW /boxH
+        //mask 在 small 中移动的距离 box.clientWidth box.clientHeight
+        if(x > boxW - halfOfMaskW*2){
+            x = boxW - halfOfMaskW*2;
+        }
+        if(y > boxH - halfOfMaskH * 2 ){
+            y = boxH - halfOfMaskH * 2;
+        }
+        //设置mask移动位置
+        mask.style.top = y + 'px';
+        mask.style.left = x + 'px';
+
+        //设置big图片显示
+        let bigImg = big.querySelector('.big > img');
+        let bigImgW = bigImg.offsetWidth;
+        // console.log(bigImgW)
+        let bigImgH = bigImg.offsetHeight;
+        //大图当前位置 = 遮罩位置 * 大图的最大移动位置/遮罩最大的移动位置
+        bigImg.style.top = y * bigImgH/boxH * -1 + 'px';
+        bigImg.style.left = x * bigImgW/boxW * -1 + 'px';
+    }
+</script>
+</html>

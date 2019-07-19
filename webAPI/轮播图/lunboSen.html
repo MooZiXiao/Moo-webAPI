@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            display: block;
+            color: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        img{
+            display: block;
+            width:100%;
+        }
+        .swiper{
+            width:600px;
+            height:360px;
+            margin:50px auto;
+            position: relative;
+        }
+        /* 轮播图片 */
+        .swiper-pic{
+            width:600px;
+            height:360px;
+        }
+        .swiper-pic ul{
+            /* position: relative; */
+        }
+        .swiper-pic ul li{
+            position: absolute;
+            width:600px;
+            height:360px;
+            transition: all 3s;
+        }
+        .swiper-pic ul li:first-child{
+            z-index: 1;
+        }
+        .swiper-pic ul li img{
+            width:600px;
+            height: 360px;
+        }
+        /* 焦点 */
+        .swiper-dot{
+            position: absolute;
+            left:50%;
+            bottom:10px;
+            transform: translateX(-50%);
+            width:120px;
+            /* background-color: rgba(255,255,255,.8); */
+            background-color: rgba(0,0,0,.5);
+            text-align: center;
+            border-radius: 15px;
+            z-index: 2;
+        }
+        .swiper-dot span{
+            display: inline-block;
+            width:17px;
+            height:17px;
+            margin-top:4px;
+            margin-right:4px;
+            background-color: rgb(233, 76, 10);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .swiper-dot span:last-child{
+            margin-right: 0;
+        }
+
+        /* 左右按钮 */
+        .dirCom{
+            position: absolute;
+            top:50%;
+            padding:5px 0;
+            background-color: rgba(0,0,0,.3);
+            font-size: 42px;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 1s;
+        }
+        .swiper-left{
+            left:0;
+        }
+        .swiper-right{
+            right:0;
+        }
+
+        /* 焦点激活的背景色 */
+        .swiper-dot .current{
+            background-color: rgba(255,255,255,.8);
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="swiper">
+        <div class="swiper-pic">
+            <ul>
+                <li><a href="#"><img src="./images/lunbo1.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo2.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo3.jpg" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo4.webp" alt=""></a></li>
+            </ul>
+        </div>
+        <div class="swiper-dot">
+            <span class="current"></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="swiper-left dirCom">&lt;</div>
+        <div class="swiper-right dirCom">&gt;</div>
+    </div>
+</body>
+<script>
+    //简化获取元素
+    function getQuery(qs){
+        return typeof(qs) ? document.querySelector(qs) : qs;
+    }
+
+    //创建 轮播图 函数
+    function Playphoto(){
+        //获取元素
+        //获取swiper
+        var swiper=getQuery(".swiper");
+        // console.log(swiper);
+        //获取 li
+        //若是调用getQuery(".xxx")有时会获取不到style等属性，一开始用函数调用则出错，全部功能完成却可以使用
+        var getAllLi=getQuery('.swiper-pic').getElementsByTagName("li");
+        //获取焦点的 span 
+        var getAllSpan=document.querySelector('.swiper-dot').getElementsByTagName("span");
+        //获取 左按钮
+        var getLeft=getQuery(".swiper-left");
+        //获取 右按钮
+        var getRight=getQuery(".swiper-right");
+
+        //设置地址值
+        var index=0;
+        //设置 timer
+        var timer=0;
+
+        // 在对象中调用函数，不用加入this，否则会提示找不到该函数
+        //创建函数，切换图片
+        function changePic(){
+            for(var i=0; i<getAllLi.length; i++){
+                //排他思想
+                //设置所有的li 透明度为0;
+                //设置当前li 透明度为1，层叠样式
+                getAllLi[i].style.opacity="0";
+                getAllSpan[i].classList.remove("current");
+            }
+            getAllLi[index].style.opacity="1";
+            getAllSpan[index].classList.add("current");
+        }
+        
+        // 自动播放
+        function autoPlay(){
+            //设置定时器
+            timer=setInterval(function(){
+                index++;
+                // 当index等于4时的处理
+                if(index==getAllLi.length){
+                    index=0;
+                };
+                // 调用切换图片的函数
+                changePic();
+            },3500);
+        }
+
+        this.continuePlay=function(){
+            autoPlay();
+        }
+        //清除定时器
+        function stopPlay(){
+            clearInterval(timer);
+        }
+        //鼠标移入swiper中暂停轮播
+        this.pausePlay=function(){
+            swiper.addEventListener("mouseover",function(){
+                stopPlay();
+            })
+        }
+        //鼠标移出swiper后继续轮播
+        this.playAgain=function(){
+            swiper.addEventListener("mouseout",function(){
+                autoPlay();
+            })
+        }
+        //向左切换
+        this.leftPlay=function(){
+            //左按钮点击事件
+            getLeft.addEventListener("click",function(){
+                index--;
+                //index为0时
+                if(index<0){
+                    index=getAllLi.length-1;
+                }
+                changePic();
+            })
+        }
+        //向右切换
+        this.rightPlay=function(){
+            //设置右按钮点击
+            getRight.addEventListener("click",function(){
+                index++;
+                //index==4时
+                if(index===getAllLi.length){
+                    index=0;
+                }
+                changePic();
+            })
+        }
+        //焦点切换
+        this.dotPlay=function(){
+            for(var i=0; i<getAllLi.length; i++){
+                //设置i同焦点的index一致
+                getAllSpan[i].index=i;
+                //焦点点击事件
+                getAllSpan[i].addEventListener("click",function(){
+                    //当焦点地址值赋值给index
+                    index=this.index;
+                    //清除定时
+                    timer=0;
+                    changePic();
+                })
+            }
+        }
+
+    };
+    // console.log(Playphoto)
+    //调用
+    window.addEventListener("load",function(){
+        var ap=new Playphoto();
+        ap.continuePlay();
+        ap.pausePlay();
+        ap.playAgain();
+        ap.leftPlay();
+        ap.rightPlay();
+        ap.dotPlay();
+    })
+
+</script>
+</html>

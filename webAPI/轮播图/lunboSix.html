@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        img{
+            display: block;
+            width: 100%;
+            height:400px;   /*  */
+        }
+        a{
+            -webkit-tap-highlight-color: transparent;
+        }
+        .swiper{
+            position: relative;
+            width:590px;
+            height: 400px;
+            margin:50px auto;
+            overflow: hidden;
+        }
+        .swiper-pic{
+            width:590px;
+            height: 400px;
+            /* position: relative; */
+        }
+        .swiper-pic ul{
+            position: absolute;
+            left: 0;
+            width:600%;
+            transition: left linear 1s;
+            /* height:470px; */
+        }
+        .swiper-pic li{
+            float: left;
+            width:590px;
+            /* height:470px; */
+            /* opacity: 1;    */
+        }
+        .swiper-pic li:first-child{
+            z-index: 2;
+        }
+        /* 点 */
+        .swiper-dot{
+            position: absolute;
+            bottom:0px;
+            width:100%;
+            padding-left:4px;
+            /* background-color: rgba(255,255,255,.5); */
+            /*left:50%;
+            width:166px;
+            text-align: center;
+            border-radius: 10px;
+            transform: translateX(-50%); */
+            z-index: 12;
+        }
+        .swiper-dot span{
+            display: inline-block;
+            width:88px;
+            height:64px;
+            margin-top:5px;
+            margin-right:6px;
+            background-color: rgba(255,255,255,.5);
+            /*  */
+            /* 
+            border-radius: 50%; */
+            cursor: pointer;
+        }
+        .swiper-dot span img{
+            display: block;
+            width:80px;
+            height:56px;
+            margin:4px;
+        }
+        .swiper-dot span:last-child{
+            margin-right: 0;
+        }
+        /* 左 */
+        .floatCon{
+            display: none;
+            position: absolute;
+            top:50%;
+            /* padding:10px 5px; */
+            background-color: rgba(0,0,0,.3);
+            font-size: 42px;
+            color: #fff;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 10;
+        }
+        .swiper-left{
+            left:0;
+        }
+        .swiper-right{
+            right:0;
+        }
+        .swiper:hover .floatCon{
+            display: block;
+        }
+        /*  */
+        .current{
+            background-color: rgb(143,52,110) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="swiper">
+        <!-- 图片 -->
+        <div class="swiper-pic">
+            <ul>
+                <li><a href="#"><img src="./images/lunbo1.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo2.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo3.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo4.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo5.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo6.webp" alt=""></a></li>
+            </ul>
+        </div>
+        <!-- 点 -->
+        <div class="swiper-dot">
+            <span class="current"><img src="./images/lunbo1.webp" alt=""></span>
+            <span><img src="./images/lunbo2.webp" alt=""></span>
+            <span><img src="./images/lunbo3.webp" alt=""></span>
+            <span><img src="./images/lunbo4.webp" alt=""></span>
+            <span><img src="./images/lunbo5.webp" alt=""></span>
+            <span><img src="./images/lunbo6.webp" alt=""></span>
+        </div>
+        <!-- 左 -->
+        <div class="swiper-left floatCon">&lt;</div>
+        <!-- 右 -->
+        <div class="swiper-right floatCon">&gt;</div>
+    </div>
+</body>
+<script>
+    function getQS(qs){
+        return typeof(qs)==='string' ? document.querySelector(qs) : qs;
+    }
+
+    //获取元素
+    let swiperPic=getQS('.swiper-pic');   //swiperPic
+
+    let swiperPicUl=getQS('.swiper-pic > ul');   //swiperPicUl
+
+    let swiperPicLi=swiperPic.getElementsByTagName('li');
+
+    let swiperDot=getQS('.swiper-dot').getElementsByTagName('span');  //dot span
+
+    let swiperLeft=getQS('.swiper-left');    //btn left
+    
+    let swiperRight=getQS('.swiper-right');   //btn right
+
+    console.log(swiperDot)
+
+    //ul的left
+    let picUlLeft=parseFloat(getComputedStyle(swiperPicUl).left);   // ul  left
+    // li 长
+    let liWidth=swiperPicLi[0].offsetWidth;   // li width
+    console.log(liWidth)
+
+    //初始变量
+    let index=0;
+    let timer=0;
+
+    //切换图片
+    function changePic(){
+       //index 自增
+        index++;
+
+        //ul的left属性 每次 减去 li的宽
+        picUlLeft -= liWidth;
+        //设置 ul left属性 偏移距离 
+        swiperPicUl.style.left= picUlLeft + 'px';
+
+        //当index 等于6时
+        //index 要回到 0的位置
+        //ul 的 left属性 的 偏移要回到最初的位置 即 0
+
+        if( index === swiperPicLi.length){
+            index=0;
+            picUlLeft=0;
+            swiperPicUl.style.left=picUlLeft;
+            swiperDot[index].classList.add('current');
+        }
+
+        //循环获得 焦点 并为所有的焦点清除 current 类选择器
+        for(let i=0; i<swiperDot.length; i++){
+            swiperDot[i].classList.remove('current');
+        }
+        //通过 index ，设置当前的焦点加上 current类选择器  
+        swiperDot[index].classList.add('current');
+
+        // if(index === swiperDot.length){
+        //     index=0;
+        // }
+    }
+    // changePic()
+    //设置定时器
+    function interTimer(){
+        timer=setInterval(function(){
+            //changePic 含图片图片及焦点的处理 所有调用时图片和焦点都可以移动（即轮播）
+            changePic();
+        },2000)
+    }
+    interTimer();
+    //清除定时器
+    function clearTimer(){
+        clearInterval(timer);
+    }
+
+    //鼠标经过swiper-pic
+    swiperPic.addEventListener('mouseover',clearTimer);
+
+    swiperPic.addEventListener('mouseout',interTimer);
+
+    //左按钮//右按钮
+                        //按左按钮时 焦点图片没有变化
+    function changeLR(){
+        swiperLeft.addEventListener('click',function(){
+            clearTimer();
+            index--;
+            if(index<0){
+                index=swiperPicLi.length-1;
+                //位置
+                picUlLeft= liWidth * (-1*(swiperPicLi.length-1));
+                swiperPicUl.style.left=picUlLeft  + 'px';
+            }else{
+                picUlLeft = picUlLeft + liWidth;
+                swiperPicUl.style.left= picUlLeft  + 'px';
+            }
+
+            for(let i=0; i<swiperDot.length;i++){
+                swiperDot[i].classList.remove("current");
+            }
+            swiperDot[index].classList.add("current");
+        })
+
+        swiperRight.addEventListener('click',function(){
+            clearTimer();
+            changePic();
+        })
+    }
+    changeLR();
+
+    //焦点
+    
+    function dotPlay(){
+        //获取各个swiperDot 
+        for(let i=0; i<swiperDot.length; i++){
+            //将i的值设置给焦点的index
+            swiperDot[i].index=i;
+            //焦点 鼠标 移入事件
+            swiperDot[i].addEventListener('mouseover',function(){
+                clearTimer();
+                //设置焦点格式
+                for(let j=0; j<swiperDot.length; j++){
+                    swiperDot[j].classList.remove('current');
+                }
+                swiperDot[this.index].classList.add('current');
+
+                //对应图片
+                //将 鼠标移到的对应焦点的位置值 赋给 index
+                //设置ul left属性偏移值
+                index=this.index;
+                picUlLeft = -1*this.index * liWidth;
+                swiperPicUl.style.left= picUlLeft + 'px';
+            })
+        }
+        getQS('.swiper-dot').addEventListener('mouseover',clearTimer);
+        getQS('.swiper-dot').addEventListener('mouseout',interTimer);
+
+    }
+    //调用焦点函数
+    dotPlay();
+
+
+</script>
+</html>

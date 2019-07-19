@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>图片放大镜效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        .pic {
+            width: 350px;
+            margin: 100px;
+        }
+
+        .box {
+            width: 350px;
+            height: 350px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+
+        .big {
+            width: 400px;
+            height: 400px;
+            position: absolute;
+            top: 0;
+            left: 360px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            display: none;
+        }
+
+        .big img {
+            height: 600px;
+            max-width: 620px;
+            min-width: 400px;
+        }
+
+        .mask {
+            width: 175px;
+            height: 175px;
+            background: rgba(255, 255, 0, 0.4);
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            /* 把鼠标指针换成移动图标 */
+            cursor: move;
+            display: none;
+        }
+
+        .small {
+            position: relative;
+            height: 350px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .small img {
+            max-width: 350px;
+            min-width: 200px;
+        }
+
+        .active .mask,
+        .active .big {
+            display: block;
+        }
+
+        .big img {
+            /* 相对定位：相对自己原本的位置定位，原来的位置保留的 */
+            position: absolute;
+        }
+
+        /*  */
+        .box-bot ul li {
+            float: left;
+            width: 50px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .box-bot ul li:last-child {
+            margin-right: 0px;
+        }
+
+        .box-bot ul li:hover {}
+
+        .smallActive {
+            outline: 2px solid rgba(233, 13, 133, .9)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pic">
+        <!-- 整个大盒子 -->
+        <div class="box">
+            <div class="small">
+                <!--小图-->
+                <img alt="" src="./image/00.jpg_400x400.jpg" />
+                <!-- 遮挡层,黄色的小方块 -->
+                <div class="mask"></div>
+            </div>
+            <!--大层-->
+            <div class="big">
+                <!--大图-->
+                <img alt="" class="big-img" src="./image/00.jpg_620.jpg" />
+            </div>
+        </div>
+        <div class="box-bot">
+            <ul>
+                <li class="smallActive">
+                    <a href="javascript:void(0)"><img src="./image/00.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><img src="./image/01.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><img src="./image/02.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><img src="./image/03.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><img src="./image/04.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><img src="./image/05.jpg_50x50.jpg_.webp" alt=""></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+    // 放大镜效果
+    function extandPic() {
+        //获取元素
+        let box = document.querySelector('.box');
+        let small = document.querySelector('.small');
+        // let smallImg = document.querySelector('.small > img');
+        let mask = document.querySelector('.mask');
+        let big = document.querySelector('.big');
+        let bigImg = document.querySelector('.big-img');
+
+        //鼠标悬停box，遮罩层和大图显示
+        box.onmouseover = function () {
+            // mask.setAttribute('class','active mask');
+            mask.style.display = 'block';
+
+            big.style.display = 'block';
+        }
+        box.onmouseout = function () {
+            mask.style.display = '';
+            big.style.display = '';
+        }
+
+        //设置遮罩随鼠标移动
+        //获取位置值相关
+        let boxW = box.offsetWidth;
+        let boxH = box.offsetHeight;
+        let boxL = box.offsetLeft;
+        let boxT = box.offsetTop;
+        //鼠标移动
+        box.onmousemove = function (e) {
+            let maskW = mask.offsetWidth;
+            let maskH = mask.offsetHeight;
+
+            //mask不除以2时，鼠标位置是在mask的最右最下角，所以要让鼠标位置在中间则是mask/2
+            let x = e.pageX - boxL - maskW / 2;
+            let y = e.pageY - boxT - maskH / 2;
+
+            //通过判断来设置mask移动的区域
+            if (x < 0) x = 0; //左
+            if (y < 0) y = 0; //上
+            if (x > boxW - maskW) x = boxW - maskW; //右
+            if (y > boxH - maskH) y = boxH - maskH; //下
+
+
+            //当small图片为min-width时
+            let smallImgW = document.querySelector('.small > img').offsetWidth;
+            let smallImgH = document.querySelector('.small > img').offsetHeight;
+            console.log(x)
+
+            if (smallImgW === 234) {
+
+                boxW = smallImgW + maskW / 3;
+                console.log(boxW)
+                // box.style.left = maskW/2
+                console.log(x)
+                if (x < 56.5) {
+                    x = 56.5;
+                }
+                if (x > 116.5) {//maskW/3.5
+                    x = 116.5;
+                }
+                big.style.width = '300px';
+                // bigImg.style.width = '520px'
+                // bigImg.style.margin = '0 0 0 65px';
+            } else {
+                big.style.width = '400px'
+            }
+            boxW = box.offsetWidth;
+            mask.style.left = x + 'px';
+            mask.style.top = y + 'px';
+
+
+            //设置大图显示
+            let bigImgW = bigImg.offsetWidth;
+            // console.log(bigImgW)
+            let bigImgH = bigImg.offsetHeight;
+            // console.log(smallImgW)
+            // if(smallImgW === 234){
+            //     bigImg.style.margin='0 70px';
+            // }
+
+            bigImg.style.left = -1 * x * bigImgW / boxW / 1.51 + 'px'; //根据显示来调/1.51
+            bigImg.style.top = -1 * y * bigImgH / boxH / 1.51 + 'px';
+        }
+    }
+
+    //播放
+    let boxBot = document.querySelector('.box-bot');
+    let boxBotLi = boxBot.querySelectorAll('li');
+    let smallImg = document.querySelector('.small > img');
+    let bigImg = document.querySelector('.big-img')
+
+    //改变图片
+    function changePic() {
+        //遍历li
+        boxBotLi.forEach((v, i) => {
+            //li 鼠标事件
+            v.onmouseover = function () {
+                //排他 li样式
+                boxBotLi.forEach(e => {
+                    e.classList.remove('smallActive');
+                })
+                v.classList.add('smallActive');
+
+                //上边图跟着变换
+
+                let smallImgSrc = './image/0' + i + '.jpg_400x400.jpg';
+                smallImg.src = smallImgSrc;
+
+                let bigImgSrc = './image/0' + i + '.jpg_620.jpg';
+                bigImg.src = bigImgSrc;
+            }
+            // setInterval(v,3000)
+        })
+    }
+
+
+    window.addEventListener('load', function () {
+        extandPic();
+
+        changePic();
+    })
+</script>
+
+</html>

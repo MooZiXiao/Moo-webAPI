@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>swipe轮播图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        header {
+            /* width: 100%; */
+            height: 120px;
+            background-color: orange;
+        }
+
+        nav {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        nav ul {
+            display: flex;
+            width: 800%;
+        }
+
+        nav ul li {
+            flex: 1;
+            width: 100%;
+            /* transition: transform 500ms; */
+            /* transform: translate(-100%) */
+        }
+        nav li a{
+            display: flex;
+            height: 180px;
+            position: relative;
+        }
+        nav li a span{
+            display: block;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 5px;
+            background-color: rgba(0,0,0,.3);
+            color: #fff;
+        }
+        nav li img {
+            width: 100%;
+            vertical-align: middle;
+        }
+        main {
+            /* width: 100%; */
+            height: 220px;
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+    <nav>
+        <ul>
+            <li><a href="#"><img src="./images/lunbo5.webp" alt=""><span>6/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo0.webp" alt=""><span>1/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo1.webp" alt=""><span>2/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo2.webp" alt=""><span>3/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo3.webp" alt=""><span>4/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo4.webp" alt=""><span>5/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo5.webp" alt=""><span>6/6</span></a></li>
+            <li><a href="#"><img src="./images/lunbo0.webp" alt=""><span>1/6</span></a></li>
+        </ul>
+    </nav>
+    <main></main>
+</body>
+<script src='./js/zepto.js'></script>
+<script src='./js/touch.js'></script>
+<script>
+    //获取元素
+    let nav = $('nav');
+    let ul = $('nav>ul')
+    
+    //设置索引
+    let index = 1;
+    //设置第一张图片显示
+    let liW = nav.width();
+    //设置图片移动的距离
+    let moveW = index * liW * -1 ; 
+    ul.css('transform','translate('+ moveW + 'px)');
+    //让加载第一张图片时视觉没有加载最后一张的效果
+    setTimeout(() => {
+        ul.css('transition','transform 500ms');
+    },10);
+
+    //设置右滑动
+    ul.on('swipeRight',function(){
+        index ++;
+
+        //ul位置切换
+        moveW = index * liW * -1 ;
+        ul.css('transform','translate('+ moveW +'px)');
+    })
+    //当到切换到li.length-1时，设置效果
+    ul[0].addEventListener('transitionend', function(){
+        //切换到本来的第一张
+        if( index >= ul[0].children.length -1 ){
+            index = 1;
+
+            //切换到最后一张时，让视觉上是回到第一张
+            ul[0].style.transition= '' ;
+            // //设置ul位置
+            moveW = index * liW * -1;
+            ul.css('transform','translate('+ moveW +'px)');
+
+            //设置切换效果
+            setTimeout(() => {
+                ul.css('transition','transform 110ms');
+            },10);
+        }
+        if(index <= 0){
+            index = ul[0].children.length - 2;
+
+            moveW = index * liW * -1;
+            //清除transition
+            ul[0].style.transition = '';
+            ul.css('transform','translate('+ moveW +'px)');
+
+            //加上切换效果
+            setTimeout(() => {
+                ul.css('transition','transform 110ms');
+            },10);
+
+        }
+        // console.log(index)
+    })
+    //左滑动
+    ul.on('swipeLeft',function(){
+        index --;
+        
+        moveW = index * liW * -1;
+        ul.css('transform','translate('+ moveW +'px)');
+    })
+    //当然切换到索引为0的图片时就当让用户视觉回到最后一张
+    ul[0].addEventListener('transitionend',function(){
+        
+    })
+
+</script>
+
+</html>

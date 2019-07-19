@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>多图片轮播</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            width: 100%;
+            display: block;
+        }
+
+        /* 轮播盒子 */
+        .swiper {
+            width: 1200px;
+            position: relative;
+            overflow: hidden;
+            height: 289px;
+            margin: 20px auto;
+        }
+
+        /* 轮播标题 */
+        .swiper-title {
+            height: 40px;
+            padding: 0 15px;
+            background-color: rgb(203, 39, 43);
+            line-height: 40px;
+        }
+        .swiper-title h3{
+            float: left;
+            color: #fff;
+        }
+        /* 标题中的按钮 */
+        .swiper-btn {
+            float: right;
+        }
+
+        /* 公共按钮样式 */
+        .dirCom {
+            float: left;
+            width: 30px;
+            height: 30px;
+            margin-top: 5px;
+            background-color: rgb(250, 39, 43);
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            line-height: 30px;
+            color: #fff;
+            /* color: rgb(203,39,43); */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* 左按钮 */
+        .swiper-left {
+            margin-right: 10px;
+        }
+
+        /* 右按钮 */
+
+        /* 图片盒子 */
+        .swiper-pic {
+            height:249px;
+            background-color: rgba(0, 0, 0, .1);
+        }
+        .swiper-pic ul{
+            position: absolute;
+            left: 0;
+            width:3600px;
+            transition:  all 2.5s;
+        }
+        .swiper-pic li {
+            float: left;
+            position: relative; /*  */
+            width: 288px;
+            padding: 10px 0 10px 10px;
+        }
+        .swiper-pic li img{
+        }
+
+        .swiper-pic li:nth-child(1) {
+            /* margin-left: 0; */
+        }
+
+        /*清除浮动*/
+        .clearfix:after {
+            visibility: hidden;
+            clear: both;
+            display: block;
+            content: ".";
+            height: 0;
+            line-height: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="swiper">
+        <div class="swiper-title">
+            <h3>产品轮播</h3>
+            <div class="swiper-btn">
+                <div class="swiper-left dirCom">&lt;</div>
+                <div class="swiper-right dirCom">&gt;</div>
+            </div>
+        </div>
+        <div class="swiper-pic clearfix">
+            <ul>
+                <li>
+                    <a href="#"><img src="./images/lunbo1.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo2.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo3.jpg" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo3.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo4.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo5.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo6.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo7.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo8.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo9.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo5.webp" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="./images/lunbo6.webp" alt=""></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+    //获取元素
+    let swiperPic=document.querySelector('.swiper-pic');    //.swiper-pic
+    let swiperPicUl=swiperPic.querySelector('ul');          // 图片 ul
+    let swiperPicLi=swiperPicUl.querySelectorAll('li');     // 图片 li
+    let swiperLeft=document.querySelector('.swiper-left');  // 左按钮
+    let swiperRight=document.querySelector('.swiper-right') // 右按钮
+
+    //获取 ul 值
+    let picUlLeft=parseFloat(getComputedStyle(swiperPicUl).left);   // 图片 ul left
+    //获取 li 值
+    let picLiWidth=parseFloat(swiperPicLi[0].offsetWidth*4) ; // 图片 4 个 li width
+
+    //设置初始变量
+    let index=0;
+    let timer=0;
+
+    //切换图片
+    function changePic(){
+        //位置自增4
+        index+=4;
+        //当index>11
+        if(index>swiperPicLi.length-1){
+            //初始化index
+            index=0;
+            //ul 对应的位置
+            picUlLeft=0;
+            swiperPicUl.style.left=picUlLeft;
+        }else{
+            //ul 对应的位置
+            picUlLeft -= picLiWidth;
+            swiperPicUl.style.left= picUlLeft + 'px';
+        }
+    }
+    // changePic();
+    //设置定时器
+    function interTime(){
+        timer=setInterval(function(){
+            changePic();
+        },3500)
+    }
+    interTime();
+    //清除定时器
+    function clearTime(){
+        clearInterval(timer);
+    }
+    //鼠标移入移出
+    function mouseMove(){
+        swiperPic.addEventListener('mouseover',clearTime);
+        swiperPic.addEventListener('mouseout',interTime);
+        document.querySelector('.swiper-title').addEventListener('mouseover',clearTime);
+        document.querySelector('.swiper-title').addEventListener('mouseout',interTime);
+    }
+    mouseMove();
+    //点击左右按钮
+    function clickLR(){
+        //左按钮点击
+        swiperLeft.addEventListener('click',function(){
+            clearTime();
+            index=index-4;
+            //当index<0
+            if(index<0){
+                index= swiperPicLi.length-1;
+                //设置ul对应位置
+                picUlLeft = -picLiWidth*(4-2); //版数-2
+                swiperPicUl.style.left= picUlLeft + 'px';
+            }else{
+                picUlLeft += picLiWidth;
+                swiperPicUl.style.left= picUlLeft + 'px';
+            }
+        })
+        //右按钮点击
+        swiperRight.addEventListener('click',function(){
+            clearTime();
+            changePic();
+        })
+    }
+    clickLR();
+    // console.log(picLiWidth)
+</script>
+</html>

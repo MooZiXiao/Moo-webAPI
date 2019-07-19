@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>旋转轮播</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            display: block;
+            color: inherit;
+            width:100%;
+            height: 100%;
+            text-decoration: none;
+        }
+        img{
+            display: block;
+            width:100%;
+            height: 100%;
+        }
+        .swiper{
+            width:1200px;
+            height:400px;
+            margin:30px auto;
+            position: relative;
+        }
+        .swiper-pic{
+            width:1200px;
+            height:400px;
+            position: relative;
+              /*  */
+        }
+        .swiper-pic li{
+            position: absolute;
+            width:650px;
+            /* height:400px; */
+        }
+        .swiper-pic li a{
+            /* height:400px; */
+        }
+
+        /*  */
+        .left1{
+            top:50%;
+            left:0;
+            transform:translateY(-50%);
+            width:450px;
+            height:200px;
+
+            opacity: .8;
+            z-index: 1;
+        }
+         .left2{
+            top:50%;
+            left:10%;
+            width:550px;
+            height:300px;
+            transform: translateY(-50%);
+
+            opacity: .9;
+            z-index: 2;
+        }
+        .center{
+            left:50%;
+            transform: translateX(-50%);
+            width:650px;
+            height:400px;
+            opacity: 1;
+            z-index: 3;
+        }
+        .right2{
+            top:50%;
+            right:9%;
+
+            width:550px;
+            height:300px;
+            transform:translateY(-50%);
+            opacity: .9;
+            z-index: 2;
+        }
+        .right1{
+            top:50%;
+            right:0;
+            transform:translateY(-50%);
+            width:450px;
+            height:200px;
+
+            opacity: .8;
+            z-index: 1;
+        }/* */
+        /*  */
+        /*  */
+        .dirCom{
+            position:absolute;
+            top:50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,.2);
+            font-size: 36px;
+            color:#fff;
+            cursor: pointer;
+            z-index: 2;
+            /* display: none; */
+            opacity: 0;
+        }
+        .swiper-left{
+            left:1%;
+        }
+        .swiper-right{
+            right:0.6%;
+        }
+        .swiper:hover .dirCom{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="swiper">
+        <div class="swiper-pic">
+            <ul>
+                <li><a href="#"><img src="./images/lunbo0.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo2.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo4.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo6.webp" alt=""></a></li>
+                <li><a href="#"><img src="./images/lunbo9.webp" alt=""></a></li>
+            </ul>
+        </div>
+        <div class="swiper-left dirCom">&lt;</div>
+        <div class="swiper-right dirCom">&gt;</div>
+    </div>
+</body>
+<script>
+
+    window.onload = function(){
+        //数组 
+        let liArr = ['left1', 'left2', 'center', 'right2', 'right1']
+        //获取 swiper-pic
+        let swiperPic=document.querySelector('.swiper-pic');
+        //获取 swiper-pic li
+        let swiperPicLi=swiperPic.querySelectorAll('li');
+        
+        //遍历数组给对应的 li 加入类名
+        swiperPicLi.forEach( (e,i) => {
+            e.className = liArr[i];
+        });
+
+        //获取元素
+        let leftBtn = document.querySelector('.swiper-left');
+        let rightBtn = document.querySelector('.swiper-right');
+
+        //点击事件
+        rightBtn.onclick = () => {
+            //把最后一张放到数组最前
+            let last = liArr.pop();
+            liArr.unshift(last);
+
+            swiperPicLi.forEach((e,i) =>{
+                e.className = liArr[i];
+            })
+        }
+        leftBtn.onclick = () => {
+            //删除第一个并把第一个放在数组前
+            let first = liArr.shift();
+            liArr.push(first);
+            // console.log(first)
+            swiperPicLi.forEach( (e,i) => {
+                e.className = liArr[i];
+            })
+        }
+    }
+</script>
+</html>
